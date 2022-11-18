@@ -39,6 +39,10 @@ else:
     def is_anonymous(user):
         return user.is_anonymous
 
+    # evaluate whether request is ajax
+def is_ajax(request):
+    return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
+
 
 class VisitorTrackingMiddleware(MiddlewareMixin):
     def _should_track(self, user, request, response):
@@ -50,7 +54,7 @@ class VisitorTrackingMiddleware(MiddlewareMixin):
             return False
 
         # Do not track AJAX requests
-        if request.is_ajax() and not TRACK_AJAX_REQUESTS:
+        if is_ajax(request) and not TRACK_AJAX_REQUESTS:
             return False
 
         # Do not track if HTTP HttpResponse status_code blacklisted
